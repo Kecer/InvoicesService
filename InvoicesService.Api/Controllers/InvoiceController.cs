@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using InvoicesService.Core.Enums;
 using InvoicesService.Core.Interfaces.Services;
 using InvoicesService.Infrastructure.Dtos;
 using Microsoft.AspNetCore.Mvc;
@@ -16,9 +17,9 @@ namespace InvoicesService.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetList([FromQuery]string order = "",[FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+        public async Task<IActionResult> GetList([FromQuery] InvoiceProcessingStatus status, [FromQuery] InvoicePaymentMethods paymentMethod, [FromQuery] string order = "", [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
-            var invoices =  await  _invoiceService.ListWithPagging(order,pageNumber, pageSize);
+            var invoices =  await  _invoiceService.ListWithPagging(status,paymentMethod,order, pageNumber, pageSize);
 
             return new OkObjectResult(invoices);
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using InvoicesService.Core.Enums;
 using InvoicesService.Core.Interfaces;
 using InvoicesService.Core.Interfaces.Repositories;
 using InvoicesService.Core.Interfaces.Services;
@@ -29,10 +30,18 @@ namespace InvoicesService.Infrastructure.Services
            return Result<Invoice>.Success(invoice);
         }
 
-        public async Task<PaginatedResult<Invoice>> ListWithPagging(string order,int pageNumber,int pageSize)
+        public async Task<PaginatedResult<Invoice>> ListWithPagging(InvoiceProcessingStatus status, InvoicePaymentMethods paymentMethod,string order,int pageNumber,int pageSize)
         {
             IQueryable<Invoice> query = _invoiceRepository.Entities;
-            
+
+            if (status>0)
+            {
+                query = query.Where(x=>x.InvoiceStatus == status);
+            }
+            if (paymentMethod>0)
+            {
+                query = query.Where(x => x.PaymentMethod == paymentMethod);
+            }
             switch (order)
             {
                 case "date_asc":
